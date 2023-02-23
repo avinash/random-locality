@@ -1,3 +1,9 @@
 #!/bin/sh
 
-wget -q https://www.mauritiuspost.mu/products-and-services/post-and-zip-code-finder -O - | grep "option value" | grep -v "disabled selected"  | sed 's/^.*">//g' | sed 's/<.*$//g' | shuf | head -n 1
+wget -q https://www.mauritiuspost.mu/products-and-services/post-code-and-zip-code-finder -O - \
+	| grep "option value" \
+	| grep -v "disabled selected" \
+	| sed 's/^.*value="//g' \
+	| sed 's/".*$//g' \
+	| shuf \
+	| head -n 1
