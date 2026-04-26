@@ -1,6 +1,6 @@
 #!/bin/sh
 
-wget -q https://www.mauritiuspost.mu/products-and-services/post-code-and-zip-code-finder -O - \
+wget -q https://www.mauritiuspost.mu/find-your-post-code/ -O - \
 	| grep "option value" \
 	| grep -v "disabled selected" \
 	| sed 's/^.*value="//g' \
