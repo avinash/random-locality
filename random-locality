@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE="mauritius_localities.json"
+FILE="$HOME/.mauritius_localities.json"
 
 # 1. Check if the file exists
 if [ ! -f "$FILE" ]; then
