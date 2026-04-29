@@ -36,7 +36,7 @@ def scrape_mauritius_postcodes():
             locality_text = option.text.strip()
 
             # Skip placeholder options (e.g., "Select Main Town")
-            if not locality_val or "select" in locality_text.lower():
+            if not locality_val or "Main Town / Village" in locality_text:
                 continue
 
             print(f"Processing: {locality_text}...")
@@ -61,8 +61,8 @@ def scrape_mauritius_postcodes():
                     for row in rows:
                         cells = row.find_all("td")
                         if len(cells) >= 2:
-                            sub_name = cells[0].text.strip()
-                            postcode = cells[1].text.strip()
+                            postcode = cells[0].text.strip()
+                            sub_name = cells[1].text.strip()
 
                             # Filter out header text if caught in cells
                             if sub_name.lower() != "sub locality":
