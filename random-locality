@@ -1,12 +1,30 @@
-#!/bin/sh
+#!/bin/bash
 
-wget -q https://www.mauritiuspost.mu/find-your-post-code/ -O - \
-| sed 's/<option/\n<option/g' \
-| grep "option value" \
-| grep -v "disabled selected" \
-| sed 's/^.*value="//g' \
-| sed 's/".*$//g' \
-| sed "s/&#039;/'/g" \
-| grep -v "Main Town / Village" \
-| shuf \
-| head -n 1
+FILE="mauritius_localities.json"
+
+# 1. Check if the file exists
+if [ ! -f "$FILE" ]; then
+    echo "Error: '$FILE' not found. Please run the scraper first."
+    exit 1
+fi
+
+# 2. Extract a random main locality that actually has sub-localities
+# We use jq to get keys, filter out empty ones, and shuf to pick one
+MAIN_LOCALITY=$(jq -r 'to_entries | .[] | select(.value | length > 0) | .key' "$FILE" | shuf -n 1)
+
+if [ -z "$MAIN_LOCALITY" ]; then
+    echo "No valid data found in $FILE."
+    exit 1
+fi
+
+# 3. Extract a random sub-locality object from that main locality
+# Then parse the specific fields for the final output
+SUB_DATA=$(jq -c --arg loc "$MAIN_LOCALITY" '.[$loc] | .[]' "$FILE" | shuf -n 1)
+
+SUB_NAME=$(echo "$SUB_DATA" | jq -r '.sub_locality')
+POSTCODE=$(echo "$SUB_DATA" | jq -r '.postcode')
+
+# 4. Output the results in the requested format
+echo "Main locality: $MAIN_LOCALITY"
+echo "Sub locality: $SUB_NAME"
+echo "Postcode: $POSTCODE"
